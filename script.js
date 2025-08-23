@@ -39,7 +39,11 @@ $demos.addEventListener("click", (e) => {
   if (demo) load(demo.dataset.file);
 });
 
-const apiUrl = "https://openrouter.ai/api/v1/chat/completions";
+const apiUrl = "https://llmfoundry.straive.com/openrouter/v1/chat/completions";
+const { token } = await fetch("https://llmfoundry.straive.com/token", { credentials: "include" }).then((res) =>
+  res.json()
+);
+
 const marked = new Marked();
 const messages = [{ role: "system", content: "Generate a single page HTML app in a single Markdown code block and use emojis in the explanation to make each point more engaging and visually distinct" }];
 
@@ -54,7 +58,7 @@ document.querySelector("#app-prompt").addEventListener("submit", async (e) => {
   const body = JSON.stringify({ 
     model: $model.value,
     messages: [...messages.slice(0, -1), { role: "user", content: apiPrompt }], stream: true });
-  const headers = { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}:autoimprove` };
+  const headers = { "Content-Type": "application/json", Authorization: `Bearer ${token}:autoimprove` };
 
   messages.push({ role: "assistant", content: "", loading: true });
   drawMessages(messages);
